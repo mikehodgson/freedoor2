@@ -2,7 +2,7 @@
 *.ppu
 *.geany
 *.exe
-./bin/
-./bin/**
-./lib/
-./lib/**
+bin/
+bin/**
+lib/
+lib/**

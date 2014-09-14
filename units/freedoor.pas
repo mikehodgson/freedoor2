@@ -20,7 +20,17 @@ uses  Classes, SysUtils,{$IFDEF WIN32} Windows, {$ENDIF}Crt, Dos, Ansi,
       EleNorm;
 
 type
-  TUser = class
+  TFDObj = class
+  private
+    FDebug:     Boolean;
+  public
+    procedure   DebugWriteLn(str: string);
+    function    GetDebug(): Boolean;
+    procedure   SetDebug(Dbg: Boolean);
+  end;
+
+type
+  TUser = class(TFDObj)
   private
     FName:      string;
     FHandle:    string;
@@ -30,35 +40,51 @@ type
     FPort:      Integer;
     FLevel:     Integer;
     FTime:      Integer;
-    FAnsi:      boolean;
-    FRemote:    boolean;
-    procedure   DebugWriteLn(str: string);
+    FAnsi:      Boolean;
+    FRemote:    Boolean;
   public
-    constructor Create(dfn: string);
+    constructor Create(dfn: string; Dbg: Boolean = false);
     destructor  Destroy; override;
   end;
 
 type
-  TDoor = class
+  TDoor = class(TFDObj)
   private
     FDropFile:  string;
     FUser:      TUser;
-    FDebug:     boolean;
     procedure   ParseCommandLine;
-    procedure   DebugWriteLn(str: string);
     procedure   SetDropFile(dfn: string);
   public
-    constructor Create;
+    constructor Create(Dbg: Boolean = false);
     destructor  Destroy; override;
     function    GetDropFile(): string;
   end;
 
 implementation
 
-  { TUser Object }
+  { TFDObj Class }
   
-  constructor TUser.Create(dfn: string);
+  procedure TFDObj.DebugWriteLn(Str: string);
   begin
+    if (FDebug = true) then
+      WriteLn('### ' + Str);
+  end;
+  
+  function TFDObj.GetDebug(): Boolean;
+  begin
+    GetDebug := FDebug;
+  end;
+  
+  procedure TFDObj.SetDebug(Dbg: Boolean);
+  begin
+    FDebug := Dbg;
+  end;
+
+  { TUser Class }
+  
+  constructor TUser.Create(dfn: string; Dbg: Boolean = false);
+  begin
+    SetDebug(Dbg);
     DebugWriteLn('User object created');
   end;
   
@@ -68,19 +94,14 @@ implementation
     inherited;
   end;
 
-  procedure TUser.DebugWriteLn(Str: string);
-  begin
-    WriteLn('### ' + Str);
-  end;
+  { TDoor Class }
 
-  { TDoor Object }
-
-  constructor TDoor.Create;
+  constructor TDoor.Create(Dbg: boolean = false);
   begin
-    FDebug := true;
+    SetDebug(true);
     DebugWriteLn('Door object created');
     ParseCommandLine;
-    FUser := TUser.Create(GetDropFile());
+    FUser := TUser.Create(GetDropFile(), getDebug());
   end;
     
   destructor TDoor.Destroy;
@@ -90,12 +111,6 @@ implementation
     inherited;
   end;
     
-  procedure TDoor.DebugWriteLn(str: string);
-  begin
-    if FDebug = true then
-      WriteLn('>>> ' + str);
-  end;
-  
   procedure TDoor.ParseCommandLine;
   var
     I: Integer;

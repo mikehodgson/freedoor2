@@ -16,7 +16,7 @@ var
 
 begin
   try
-    Door := TDoor.Create;
+    Door := TDoor.Create(true);
   finally
     Door.Free;
   end;

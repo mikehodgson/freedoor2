@@ -4,3 +4,5 @@
 *.exe
 ./bin
 ./bin/*
+./lib
+./lib/*

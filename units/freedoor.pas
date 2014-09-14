@@ -24,9 +24,9 @@ type
   private
     FDebug:     Boolean;
   public
-    procedure   DebugWriteLn(str: string);
+    procedure   DebugWriteLn(Text: string);
     function    GetDebug(): Boolean;
-    procedure   SetDebug(Dbg: Boolean);
+    procedure   SetDebug(Debug: Boolean);
   end;
 
 type
@@ -43,7 +43,7 @@ type
     FAnsi:      Boolean;
     FRemote:    Boolean;
   public
-    constructor Create(dfn: string; Dbg: Boolean = false);
+    constructor Create(DropFileName: string; Debug: Boolean = false);
     destructor  Destroy; override;
   end;
 
@@ -53,21 +53,21 @@ type
     FDropFile:  string;
     FUser:      TUser;
     procedure   ParseCommandLine;
-    procedure   SetDropFile(dfn: string);
+    procedure   SetDropFile(DropFileName: string);
   public
-    constructor Create(Dbg: Boolean = false);
+    constructor Create(Debug: Boolean = false);
     destructor  Destroy; override;
     function    GetDropFile(): string;
   end;
 
 implementation
 
-  { TFDObj Class }
+  { TFDObj Base Class }
   
-  procedure TFDObj.DebugWriteLn(Str: string);
+  procedure TFDObj.DebugWriteLn(Text: string);
   begin
-    if (FDebug = true) then
-      WriteLn('### ' + Str);
+    if (FDebug) then
+      WriteLn('### ' + Text);
   end;
   
   function TFDObj.GetDebug(): Boolean;
@@ -75,16 +75,16 @@ implementation
     GetDebug := FDebug;
   end;
   
-  procedure TFDObj.SetDebug(Dbg: Boolean);
+  procedure TFDObj.SetDebug(Debug: Boolean);
   begin
-    FDebug := Dbg;
+    FDebug := Debug;
   end;
 
   { TUser Class }
   
-  constructor TUser.Create(dfn: string; Dbg: Boolean = false);
+  constructor TUser.Create(DropFileName: string; Debug: Boolean = false);
   begin
-    SetDebug(Dbg);
+    SetDebug(Debug);
     DebugWriteLn('User object created');
   end;
   
@@ -96,9 +96,9 @@ implementation
 
   { TDoor Class }
 
-  constructor TDoor.Create(Dbg: boolean = false);
+  constructor TDoor.Create(Debug: Boolean = false);
   begin
-    SetDebug(true);
+    SetDebug(Debug);
     DebugWriteLn('Door object created');
     ParseCommandLine;
     FUser := TUser.Create(GetDropFile(), getDebug());
@@ -133,9 +133,9 @@ implementation
     end;
   end;
   
-  procedure TDoor.setDropFile(Dfn: string);
+  procedure TDoor.setDropFile(DropFileName: string);
   begin
-    FDropFile := Dfn;
+    FDropFile := DropFileName;
   end;
   
   function TDoor.getDropFile(): string;

@@ -10,30 +10,29 @@
 *             Sean Dennis
 * **************************************************************************
 }
-unit freedoor;
+unit FreeDoor;
 
 {$mode objfpc}
 
 interface
 
-uses  classes, sysutils,{$IFDEF WIN32} windows, {$ENDIF}crt, dos, ansi,
-      elenorm;
+uses  Classes, SysUtils,{$IFDEF WIN32} Windows, {$ENDIF}Crt, Dos, Ansi,
+      EleNorm;
 
 type
   TUser = class
   private
-    name:       string;
-    handle:     string;
-    location:   string;
-    baudRate:   integer;
-    node:       integer;
-    port:       integer;
-    level:      integer;
-    time:       integer;
-    hasANSI:    boolean;
-    isRemote:   boolean;
-
-    procedure debugWriteLn(str: string);
+    FName:      string;
+    FHandle:    string;
+    FLocation:  string;
+    FBaudRate:  Integer;
+    FNode:      Integer;
+    FPort:      Integer;
+    FLevel:     Integer;
+    FTime:      Integer;
+    FAnsi:      boolean;
+    FRemote:    boolean;
+    procedure   DebugWriteLn(str: string);
   public
     constructor Create(dfn: string);
     destructor  Destroy; override;
@@ -42,17 +41,16 @@ type
 type
   TDoor = class
   private
-    dropFile:   string;
-    user:       TUser;
-    debug:      boolean;
-    
-    procedure parseCommandLine;
-    procedure debugWriteLn(str: string);
-    procedure setDropFile(dfn: string);
+    FDropFile:  string;
+    FUser:      TUser;
+    FDebug:     boolean;
+    procedure   ParseCommandLine;
+    procedure   DebugWriteLn(str: string);
+    procedure   SetDropFile(dfn: string);
   public
     constructor Create;
-    destructor Destroy; override;
-    function getDropFile(): string;
+    destructor  Destroy; override;
+    function    GetDropFile(): string;
   end;
 
 implementation
@@ -61,72 +59,72 @@ implementation
   
   constructor TUser.Create(dfn: string);
   begin
-    debugWriteLn('User object created');
+    DebugWriteLn('User object created');
   end;
   
   destructor TUser.Destroy;
   begin
-    debugWriteLn('User object destroyed');
+    DebugWriteLn('User object destroyed');
     inherited;
   end;
 
-  procedure TUser.debugWriteLn(str: string);
+  procedure TUser.DebugWriteLn(Str: string);
   begin
-    writeLn('### ' + str);
+    WriteLn('### ' + Str);
   end;
 
   { TDoor Object }
 
   constructor TDoor.Create;
   begin
-    debug := true;
-    debugWriteLn('Door object created');
-    parseCommandLine;
-    user := TUser.Create(getDropFile());
+    FDebug := true;
+    DebugWriteLn('Door object created');
+    ParseCommandLine;
+    FUser := TUser.Create(GetDropFile());
   end;
     
   destructor TDoor.Destroy;
   begin
-    freeAndNil(user);
-    debugWriteLn('Door object destroyed');
+    FreeAndNil(FUser);
+    DebugWriteLn('Door object destroyed');
     inherited;
   end;
     
-  procedure TDoor.debugWriteLn(str: string);
+  procedure TDoor.DebugWriteLn(str: string);
   begin
-    if debug = true then
-      writeLn('>>> ' + str);
+    if FDebug = true then
+      WriteLn('>>> ' + str);
   end;
   
-  procedure TDoor.parseCommandLine;
+  procedure TDoor.ParseCommandLine;
   var
-    i: integer;
+    I: Integer;
   begin
-    for i := 1 to paramCount do
+    for I := 1 to ParamCount do
     begin
-       case upperCase(paramStr(i)) of
+       case UpperCase(ParamStr(I)) of
        
         { Read drop file }
         '/D': begin
-          setDropFile(paramStr(i + 1));
-          debugWriteLn('Dropfile set to: ' + getDropFile());
+          SetDropFile(ParamStr(I + 1));
+          DebugWriteLn('Dropfile set to: ' + GetDropFile());
         end;
         
         { Local only, ask user for information }
         '/L': begin
-          debugWriteLn('Entering local only mode...');
+          DebugWriteLn('Entering local only mode...');
         end;
       end;
     end;
   end;
   
-  procedure TDoor.setDropFile(dfn: string);
+  procedure TDoor.setDropFile(Dfn: string);
   begin
-    dropFile := dfn;
+    FDropFile := Dfn;
   end;
   
   function TDoor.getDropFile(): string;
   begin
-    getDropFile := dropFile;
+    GetDropFile := FDropFile;
   end;
 end.

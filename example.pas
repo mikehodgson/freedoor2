@@ -9,15 +9,15 @@
 * **************************************************************************
 }
 
-uses freedoor;
+uses FreeDoor;
 
 var
-  door: TDoor;
+  Door: TDoor;
 
 begin
   try
-    door := TDoor.Create;
+    Door := TDoor.Create;
   finally
-    door.Free;
+    Door.Free;
   end;
 end.

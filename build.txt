@@ -1,0 +1,3 @@
+FPC Command line:
+
+fpc -Sd -FU.\lib -FE.\bin -Fu.\units -Fu.\units\elecom -Fu.\units\elecom\source example.pas
